@@ -170,12 +170,18 @@ const searchByUserAndByPage = (user = null, term = '', p = null, n = null, opts 
         p
       }
     })
-      .then(({data}) => {
-        const results = extractFromHTML(data)
+    .then(({data}) => {
+      const results = extractFromHTML(data)
 
-        resolve(results.slice(0, n || results.length))
-      })
-      .catch(/* istanbul ignore next */ (err) => reject(err))
+      resolve(results.slice(0, n || results.length))
+    })
+    .catch(/* istanbul ignore next */ (err) => {
+      // Nyaa returns errcode 404 if keyword is empty and the page does not exist (i.e. page 6/5)
+      //  so resolve empty (:
+      if (!term && err.response.status === 404) resolve([])
+
+      reject(err)
+    })
   })
 }
 

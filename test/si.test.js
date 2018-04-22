@@ -306,3 +306,13 @@ test('SearchByUserAndByPage method returns an error if no page is given', async 
     t.true(e.message.includes('[Nyaapi]'))    
   }
 })
+
+test('SearchByUserAndByPage method returns empty if term empty and page number too high', async t => {
+  try {
+    const data = await si.searchByUserAndByPage(fansub, null, 999)
+
+    t.is(data.length, 0)
+  } catch (e) {
+    t.fail(e.message)
+  }
+})
